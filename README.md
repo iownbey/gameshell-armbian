@@ -30,6 +30,8 @@ On a linux machine with ubuntu 22.04 (wsl2 is supported) run this inside the rep
 ./compile.sh  BOARD=clockworkpi-gameshell BRANCH=current RELEASE=bookworm KERNEL_CONFIGURE=no
 ```
 
+If it complains about UTF-8 not being supported, you can get rid of that by running wsl inside powershell instead of cmd.
+
 This will take a while. It may ask you if you want to download the full linux kernel source, say yes if it does.
 
 Once complete, you will find an image file in output/images/ That should be able to be written to an SD card and booted in a GameShell.
