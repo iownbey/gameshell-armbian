@@ -11,9 +11,7 @@
 
 # Original Forum Post For this Fork
 
-Hi all,
-
-I have been working on a fork of the armbian build system that will support the Gameshell. Currently, it builds an SD Card image, installs launchergo and retroarch, and some other bits, and gets the GameShell OS mostly working on stock armbian.
+Currently, it builds an SD Card image, installs launchergo and retroarch, and some other bits, and gets the GameShell OS mostly working on stock armbian.
 
 Tested with Armbian 24.02 and kernel 6.1 and kernel 6.6
 
@@ -23,12 +21,12 @@ Items not working yet:
 -   Audio - it seems the volume control for Master isn’t controlling the actual audio out. Some other control called “AIF1 DA0” seems to be it, but I don’t know how to remap it.
 -   Gadget ethernet: this may be a kernel thing or just a kernel commandline thing, I haven’t tested it yet
 -   Windows share support: This is a matter of properly setting up samba.
-    Trying it out:
-    on a linux machine, or in wsl2 with ubuntu 22.04 run:
+
+### Trying it out:
+
+On a linux machine with ubuntu 22.04 (wsl2 is supported) run this inside the repo:
 
 ```bash
-git clone https://github.com/uberlinuxguy/armbian-build.git
-cd armbian-build/
 ./compile.sh  BOARD=clockworkpi-gameshell BRANCH=current RELEASE=bookworm KERNEL_CONFIGURE=no
 ```
 
