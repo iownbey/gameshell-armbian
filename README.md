@@ -9,22 +9,55 @@
 <a href=https://github.com/armbian/build/commits/main><img alt="GitHub last commit (branch)" src="https://img.shields.io/github/last-commit/armbian/build/main?logo=github&label=Last%20commit&style=for-the-badge&branch=main&logoColor=white"></a>
 </p>
 
+# Original Forum Post For this Fork
+
+Hi all,
+
+I have been working on a fork of the armbian build system that will support the Gameshell. Currently, it builds an SD Card image, installs launchergo and retroarch, and some other bits, and gets the GameShell OS mostly working on stock armbian.
+
+Tested with Armbian 24.02 and kernel 6.1 and kernel 6.6
+
+Items not working yet:
+
+-   Bluetooth, not sure why, may have something to do with this: Home · clockworkpi/bluetooth Wiki · GitHub 7 which I cannot get to work
+-   Audio - it seems the volume control for Master isn’t controlling the actual audio out. Some other control called “AIF1 DA0” seems to be it, but I don’t know how to remap it.
+-   Gadget ethernet: this may be a kernel thing or just a kernel commandline thing, I haven’t tested it yet
+-   Windows share support: This is a matter of properly setting up samba.
+    Trying it out:
+    on a linux machine, or in wsl2 with ubuntu 22.04 run:
+
+```bash
+git clone https://github.com/uberlinuxguy/armbian-build.git
+cd armbian-build/
+./compile.sh  BOARD=clockworkpi-gameshell BRANCH=current RELEASE=bookworm KERNEL_CONFIGURE=no
+```
+
+This will take a while. It may ask you if you want to download the full linux kernel source, say yes if it does.
+
+Once complete, you will find an image file in output/images/ That should be able to be written to an SD card and booted in a GameShell.
+
+If you are interested in hacking around, look at armbian-build/config/boards/clockworkpi-gameshell.csc That is where most of the customizing magic happens.
+
+Special thanks to @guu as most of the things I have pulled together came from repositories they were owner of.
+
+# Original Armbian README
+
 ## What does this project do?
 
-- Builds custom **kernel**, **image** or a **distribution** optimized for low-resource hardware,
-- Include filesystem generation, low-level control software, kernel image and **bootloader** compilation,
-- Provides a **consistent user experience** by keeping system standards across different platforms.
+-   Builds custom **kernel**, **image** or a **distribution** optimized for low-resource hardware,
+-   Include filesystem generation, low-level control software, kernel image and **bootloader** compilation,
+-   Provides a **consistent user experience** by keeping system standards across different platforms.
 
 ## Getting started
 
 ### Requirements for self hosted
 
-- x86_64 / aarch64 machine
-- at least 2GB of memory and ~35GB of disk space for VM, container or bare metal installation
-- [Armbian / Ubuntu Jammy 22.04.x](https://github.com/armbian/sdk) for native building or any Docker capable Linux for containerised
-- Windows 10/11 with WSL2 subsystem running Ubuntu Jammy 22.04.x
-- Superuser rights (configured sudo or root access).
-- Make sure your system is up-to-date! Outdated Docker binaries, for example, can cause trouble.
+-   x86_64 / aarch64 machine
+-   at least 2GB of memory and ~35GB of disk space for VM, container or bare metal installation
+-   [Armbian / Ubuntu Jammy 22.04.x](https://github.com/armbian/sdk) for native building or any Docker capable Linux for containerised
+-   Windows 10/11 with WSL2 subsystem running Ubuntu Jammy 22.04.x
+-   Superuser rights (configured sudo or root access).
+-   Make sure your system is up-to-date! Outdated Docker binaries, for example, can cause trouble.
 
 For stable branch use `--branch=v24.05`
 
@@ -37,9 +70,9 @@ cd build
 
 <a href="#how-to-build-an-image-or-a-kernel"><img src=".github/README.gif" alt="Armbian logo" width="100%"></a>
 
-- Interactive graphical interface.
-- Prepares the workspace by installing the necessary dependencies and sources.
-- It guides the entire process and creates a kernel package or a ready-to-use SD card image.
+-   Interactive graphical interface.
+-   Prepares the workspace by installing the necessary dependencies and sources.
+-   It guides the entire process and creates a kernel package or a ready-to-use SD card image.
 
 ### Build parameter examples
 
@@ -78,41 +111,43 @@ jobs:
           armbian_target:    "build"                        # build=image, kernel=kernel
           armbian_board:     "bananapim5"                   # build target
 ```
+
 Generated image will be uploaded to your repository release. Note: GitHub upload file limit is 2Gb.
 
 ## More information:
 
-- [Building Armbian](https://docs.armbian.com/Developer-Guide_Build-Preparation/) (how to start, how to automate)
-- [Build options](https://docs.armbian.com/Developer-Guide_Build-Options/) (all build options)
-- [User configuration](https://docs.armbian.com/Developer-Guide_User-Configurations/) (how to add packages, patches, and override sources config)
+-   [Building Armbian](https://docs.armbian.com/Developer-Guide_Build-Preparation/) (how to start, how to automate)
+-   [Build options](https://docs.armbian.com/Developer-Guide_Build-Options/) (all build options)
+-   [User configuration](https://docs.armbian.com/Developer-Guide_User-Configurations/) (how to add packages, patches, and override sources config)
 
 ## Download prebuilt images releases
 
 ### Point
 
-- [manually released **standard supported** builds](https://www.armbian.com/download/?device_support=Standard%20support) (quarterly)
+-   [manually released **standard supported** builds](https://www.armbian.com/download/?device_support=Standard%20support) (quarterly)
 
 ### Rolling
 
-- [automatically released **staging and standard supported** builds](https://github.com/armbian/os/releases/latest) (daily)
-- [automatically released **community maintained** builds](https://github.com/armbian/community/releases/latest) (weekly)
+-   [automatically released **staging and standard supported** builds](https://github.com/armbian/os/releases/latest) (daily)
+-   [automatically released **community maintained** builds](https://github.com/armbian/community/releases/latest) (weekly)
 
 ## Compared with industry standards
 
 <details><summary>Expand</summary>
 Check similarities, advantages and disadvantages compared with leading industry standard build software.
 
-Function | Armbian | Yocto | Buildroot |
-|:--|:--|:--|:--|
-| Target | general purpose | embedded | embedded / IOT |
-| U-boot and kernel | compiled from sources | compiled from sources | compiled from sources |
-| Board support maintenance &nbsp; | complete | outside | outside |
-| Root file system | Debian or Ubuntu based| custom | custom |
-| Package manager | APT | any | none |
-| Configurability | limited | large | large |
-| Initramfs support | yes | yes | yes |
-| Getting started | quick | very slow | slow |
-| Cross compilation | yes | yes | yes |
+| Function                         | Armbian                | Yocto                 | Buildroot             |
+| :------------------------------- | :--------------------- | :-------------------- | :-------------------- |
+| Target                           | general purpose        | embedded              | embedded / IOT        |
+| U-boot and kernel                | compiled from sources  | compiled from sources | compiled from sources |
+| Board support maintenance &nbsp; | complete               | outside               | outside               |
+| Root file system                 | Debian or Ubuntu based | custom                | custom                |
+| Package manager                  | APT                    | any                   | none                  |
+| Configurability                  | limited                | large                 | large                 |
+| Initramfs support                | yes                    | yes                   | yes                   |
+| Getting started                  | quick                  | very slow             | slow                  |
+| Cross compilation                | yes                    | yes                   | yes                   |
+
 </details>
 
 ## Project structure
@@ -191,6 +226,7 @@ Function | Armbian | Yocto | Buildroot |
     ├── misc                             User: various
     └── u-boot                           User: universal boot loader patches
 ```
+
 </details>
 
 ## Contribution
@@ -199,32 +235,33 @@ Function | Armbian | Yocto | Buildroot |
 
 We always need those volunteering positions:
 
-- [Code reviewer](https://forum.armbian.com/staffapplications/application/23-code-reviewer/)
-- [Build framework maintainer](https://forum.armbian.com/staffapplications/application/9-build-framework-maintainer/)
-- [Test Automation Engineer](https://forum.armbian.com/staffapplications/application/19-test-automation-engineer/)
+-   [Code reviewer](https://forum.armbian.com/staffapplications/application/23-code-reviewer/)
+-   [Build framework maintainer](https://forum.armbian.com/staffapplications/application/9-build-framework-maintainer/)
+-   [Test Automation Engineer](https://forum.armbian.com/staffapplications/application/19-test-automation-engineer/)
 
 Just apply and follow!
 
 ## Support
 
 For commercial or prioritized assistance:
- - Book an hour of [professional consultation](https://calendly.com/armbian/consultation)
- - Consider becoming a [project partner](https://forum.armbian.com/subscriptions/)
- - [Contact us](https://armbian.com/contact)!
+
+-   Book an hour of [professional consultation](https://calendly.com/armbian/consultation)
+-   Consider becoming a [project partner](https://forum.armbian.com/subscriptions/)
+-   [Contact us](https://armbian.com/contact)!
 
 Free support:
 
- Find free support via [general project search engine](https://www.armbian.com/search), [documentation](https://docs.armbian.com), [community forums](https://forum.armbian.com/) or [IRC/Discord](https://docs.armbian.com/Community_IRC/). Remember that our awesome community members mainly provide this in a **best-effort** manner, so there are no guaranteed solutions.
+Find free support via [general project search engine](https://www.armbian.com/search), [documentation](https://docs.armbian.com), [community forums](https://forum.armbian.com/) or [IRC/Discord](https://docs.armbian.com/Community_IRC/). Remember that our awesome community members mainly provide this in a **best-effort** manner, so there are no guaranteed solutions.
 
 ## Contact
 
-- [Forums](https://forum.armbian.com) for Participate in Armbian
-- IRC: `#armbian` on Libera.chat / oftc.net
-- Matrix: [https://forum.armbian.com/topic/40413-enter-the-matrix/](https://forum.armbian.com/topic/40413-enter-the-matrix/)
-- Discord: [https://discord.gg/armbian](https://discord.gg/armbian)
-- Follow [@armbian](https://twitter.com/armbian) on 𝕏 (formerly known as Twitter), <a rel="me" href="https://fosstodon.org/@armbian">Mastodon</a> or [LinkedIn](https://www.linkedin.com/company/armbian).
-- Bugs: [issues](https://github.com/armbian/build/issues) / [JIRA](https://armbian.atlassian.net/jira/dashboards/10000)
-- Office hours: [Wednesday, 12 midday, 18 afternoon, CET](https://calendly.com/armbian/office-hours)
+-   [Forums](https://forum.armbian.com) for Participate in Armbian
+-   IRC: `#armbian` on Libera.chat / oftc.net
+-   Matrix: [https://forum.armbian.com/topic/40413-enter-the-matrix/](https://forum.armbian.com/topic/40413-enter-the-matrix/)
+-   Discord: [https://discord.gg/armbian](https://discord.gg/armbian)
+-   Follow [@armbian](https://twitter.com/armbian) on 𝕏 (formerly known as Twitter), <a rel="me" href="https://fosstodon.org/@armbian">Mastodon</a> or [LinkedIn](https://www.linkedin.com/company/armbian).
+-   Bugs: [issues](https://github.com/armbian/build/issues) / [JIRA](https://armbian.atlassian.net/jira/dashboards/10000)
+-   Office hours: [Wednesday, 12 midday, 18 afternoon, CET](https://calendly.com/armbian/office-hours)
 
 ## Contributors
 
@@ -236,17 +273,17 @@ Thank you to all the people who already contributed to Armbian!
 
 ### Also
 
-- [Current and past contributors](https://github.com/armbian/build/graphs/contributors), our families and friends.
-- [Support staff](https://forum.armbian.com/members/2-moderators/) that keeps forums usable.
-- [Friends and individuals](https://armbian.com/authors) who support us with resources and their time.
-- [The Armbian Community](https://forum.armbian.com/) helps with their ideas, reports and [donations](https://www.armbian.com/donate).
+-   [Current and past contributors](https://github.com/armbian/build/graphs/contributors), our families and friends.
+-   [Support staff](https://forum.armbian.com/members/2-moderators/) that keeps forums usable.
+-   [Friends and individuals](https://armbian.com/authors) who support us with resources and their time.
+-   [The Armbian Community](https://forum.armbian.com/) helps with their ideas, reports and [donations](https://www.armbian.com/donate).
 
 ## Armbian Partners
 
 Armbian's partnership program helps to support Armbian and the Armbian community! Please take a moment to familiarize yourself with our Partners:
 
-- [Click here to visit our Partners page!](https://armbian.com/partners)
-- [How can I become a Partner?](https://forum.armbian.com/subscriptions)
+-   [Click here to visit our Partners page!](https://armbian.com/partners)
+-   [How can I become a Partner?](https://forum.armbian.com/subscriptions)
 
 ## Star History
 
