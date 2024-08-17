@@ -40,6 +40,10 @@ If you are interested in hacking around, look at armbian-build/config/boards/clo
 
 Special thanks to @guu as most of the things I have pulled together came from repositories they were owner of.
 
+### Things to fix:
+
+-   The Power LED: Look at https://github.com/clockworkpi/GameShell/blob/main/Code/Kernel/v0.6/515_power.patch
+
 # Original Armbian README
 
 ## What does this project do?
